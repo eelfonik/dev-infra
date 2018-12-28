@@ -1,0 +1,1 @@
+https://stackoverflow.com/questions/52010778/docker-compose-make-requests-between-containers
