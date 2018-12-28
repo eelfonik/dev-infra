@@ -107,10 +107,10 @@ docker-machine ssh myvm1 "docker stack deploy -c <file> <app>"   # Deploy an app
   
   For more infos & example in node.js, see [here](https://blog.docker.com/2016/07/live-debugging-docker/).
 
-- **Delete all idle resource**
-```bash
-docker system prune --volumes
-```
+- **Clean up**
+  - Delete all idle resource : `docker system prune --volumes`
+  - kill all running containers: `docker kill $(docker ps -q)`
+
 
 - **docker compose**
 https://stackoverflow.com/questions/52010778/docker-compose-make-requests-between-containers
