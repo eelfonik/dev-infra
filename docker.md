@@ -76,7 +76,7 @@ docker-machine ssh myvm1 "docker stack deploy -c <file> <app>"   # Deploy an app
 
 - **docker debug**
 
-  - if a docker container cannot be lauched, normally you can use `docker logs containerID` to see what's going on. more [commands](https://medium.com/@pimterry/5-ways-to-debug-an-exploding-docker-container-4f729e2c0aa8).
+  - if a docker container cannot be lauched, normally you can use `docker logs containerID` to see what's going on. **More [commands](https://medium.com/@pimterry/5-ways-to-debug-an-exploding-docker-container-4f729e2c0aa8)**.
   - go and create a automated bash script like `docker.sh` to automatically rebuild image, then delete exiting container, and create a new one based on the newly built image. Then you can run it by `path/to/the/script.sh` (don't forget `chmod +x` it for once:) every time you have changed the image:
 
   ```bash
@@ -110,7 +110,11 @@ docker-machine ssh myvm1 "docker stack deploy -c <file> <app>"   # Deploy an app
 - **Clean up**
   - Delete all idle resource : `docker system prune --volumes`
   - kill all running containers: `docker kill $(docker ps -q)`
+  - delete all stopped containers: `docker rm $(docker ps -a -q)`
+  - delete all images: `docker rmi $(docker images -q)`
+
+  See [details](https://medium.com/the-code-review/top-10-docker-commands-you-cant-live-without-54fb6377f481)
 
 
 - **docker compose**
-https://stackoverflow.com/questions/52010778/docker-compose-make-requests-between-containers
+To access different container ports inside a same docker compose network, you need to look for the service name defined in `docker-compose.yml`, more details [here](https://stackoverflow.com/questions/52010778/docker-compose-make-requests-between-containers).
