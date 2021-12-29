@@ -84,7 +84,9 @@ So you can attach either a local storage ( in the same worker node that the Pod 
 
 #### Deployment
 
-You can use deployment as a **blueprint** to specify how many replicats you want to have for a Pod.
+You can use deployment as a **blueprint** (`template`) ( see the example here https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#creating-a-deployment ) to specify how many replicats you want to have for a Pod. 
+
+> ℹ️ We often use one single yaml file to include Deployment & Service, as they belongs together, and we use **three dashes** (yaml specific format, not k8s) `---` to separate the Deployment & associated Service
 
 In another word, you DON'T create Pods, you create **Deployments** ( act as a blueprint ).
 
@@ -103,14 +105,13 @@ API server in the main/master node is the only entrypoint into the cluster. In o
 The conf is send using either YAML or JSON format, and it consists of multiple parts:
 
 - **apiVersion**
-
-- **kind** => choose one of the above components kind ( EX: `Deployment`, `Service`, etc)
+  - **kind** => choose one of the above components kind ( EX: `Deployment`, `Service`, `ConfigMap` , `Secret` etc)
 
 - **metadata**
 
 `name`: the name of the component
 
-`labels`: 
+`labels`: a key/value pairs attached to k8s resources, EX: `release: stable`, `env: production`.  => This is **optional** for the above mentionned components, but is **mandatory** inside `template` of `Deployment` , because `template` is the *config for Pods*, and each replicat of Pod will have separate names, but can share same `label`, and you can referent to the Pods with `selector` -> `matchLabels`.
 
 - **spec**
 
@@ -150,4 +151,43 @@ In general, the idea is to run the master processes & the worker processes all i
 This command line tool works together with minkube cluster, to talk to the **API server** in the master processe. 
 
 But it can also work with the **real cloud cluster**.
+
+Once the cluster is running, we have several commands that we can use:
+
+- `kubectl get all` will list all the Pods/Services/Deployments/replicas
+- `kubectl get configmap` / `kubectl get secret` will list ConfigMap/Secret
+- `kubectl logs <pod-name>` see the logs inside a Pod
+- `kubectl describe <component> <component-name>` check the details of a resource ( Service/Pod, ect )
+- `kubectl -h` to see all the possible commands
+
+
+
+### Demo
+
+#### conf yaml
+
+For a typical k8s project, we'll have at least 4 yaml confs (cf: [demo]('./k8s-demo'))
+
+- ConfigMap : db endpoint
+- Secret: db user & pwd
+- Deployment ( with service): db application with internal Service
+- Deployment (with external service, or Ingress): webapp with external Service
+
+#### apply the conf
+
+And then if we have minikube running locally, we can use kubectl commands, to apply the yaml conf to create Pods 🎉
+
+- `kubectl apply -f <file-name>` ( in the demo it's 4 files, and we need to apply the configMap/secret first, then the mongo.yaml, then the webapp.yaml )
+
+#### interact with the running cluster
+
+After creating the yaml conf & applied them, we can use the kubectl to interact with the running cluster. 
+
+#### external access
+
+And to verify that we can access from browser of our exposed external IP, we can first use `kubectl get service` to see all the Services, and check the one with `type` `NodePort`.
+
+As we're running using `minikube`, and in the demo we only specify one `NodePort` Service (Ingress), then we can use `kubctl get node -o wide` to get the Internal IP, and access with this `<internal-ip>:port` .
+
+> The `<internal-ip>:port` is not working for minikube for some reason I don't know, but `minikube service <servcie-name>` works. See the answer here https://stackoverflow.com/a/63243909
 
