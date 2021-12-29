@@ -166,7 +166,7 @@ Once the cluster is running, we have several commands that we can use:
 
 #### conf yaml
 
-For a typical k8s project, we'll have at least 4 yaml confs (cf: [demo]('./k8s-demo'))
+For a typical k8s project, we'll have at least 4 yaml confs (cf: [demo](k8s-demo))
 
 - ConfigMap : db endpoint
 - Secret: db user & pwd
